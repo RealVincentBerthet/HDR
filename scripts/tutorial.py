@@ -5,7 +5,7 @@ import numpy as np
 # pip install opencv-python==3.2.0.8
 
 # 1.Loading exposure images into a list
-img_fn = ["../images/tuto/img3.jpg","../images/tuto/img2.jpg","../images/tuto/img1.jpg","../images/tuto/img0.jpg"]
+img_fn = ["../sources/tuto/img3.jpg","../sources/tuto/img2.jpg","../sources/tuto/img1.jpg","../sources/tuto/img0.jpg"]
 img_list = [cv.imread(fn) for fn in img_fn]
 exposure_times = np.array([15.0, 2.5, 0.25, 0.0333], dtype=np.float32)
 
