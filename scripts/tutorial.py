@@ -5,7 +5,7 @@ import numpy as np
 # pip install opencv-python==3.2.0.8
 
 # 1.Loading exposure images into a list
-img_fn = ["images/tuto/img3.jpg","images/tuto/img2.jpg","images/tuto/img1.jpg","images/tuto/img0.jpg"]
+img_fn = ["../images/tuto/img3.jpg","../images/tuto/img2.jpg","../images/tuto/img1.jpg","../images/tuto/img0.jpg"]
 img_list = [cv.imread(fn) for fn in img_fn]
 exposure_times = np.array([15.0, 2.5, 0.25, 0.0333], dtype=np.float32)
 
@@ -35,8 +35,8 @@ hdr_robertson = merge_robertson.process(img_list, times=exposure_times.copy(), r
 
 # 6.Convert datatype to 8-bit and save
 res_debevec_8bit = np.clip(res_debevec*255, 0, 255).astype('uint8')
-cv.imwrite("output/ldr_debevec.jpg", res_debevec_8bit)
+cv.imwrite("../output/ldr_debevec.jpg", res_debevec_8bit)
 res_robertson_8bit = np.clip(res_robertson*255, 0, 255).astype('uint8')
-cv.imwrite("output/ldr_robertson.jpg", res_robertson_8bit)
+cv.imwrite("../output/ldr_robertson.jpg", res_robertson_8bit)
 res_mertens_8bit = np.clip(res_mertens*255, 0, 255).astype('uint8')
-cv.imwrite("output/fusion_mertens.jpg", res_mertens_8bit)
+cv.imwrite("../output/fusion_mertens.jpg", res_mertens_8bit)
