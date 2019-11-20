@@ -1,13 +1,11 @@
 import cv2 as cv
 import numpy as np
-#import matplotlib.pyplot as plt
 
 # 0.Require
 # pip install opencv-python==3.2.0.8
-# pip install matplotlib.pyplot
 
 # 1.Loading exposure images into a list
-img_fn = ["images/ref/img3.jpg","images/ref/img2.jpg","images/ref/img1.jpg","images/ref/img0.jpg"]
+img_fn = ["images/tuto/img3.jpg","images/tuto/img2.jpg","images/tuto/img1.jpg","images/tuto/img0.jpg"]
 img_list = [cv.imread(fn) for fn in img_fn]
 exposure_times = np.array([15.0, 2.5, 0.25, 0.0333], dtype=np.float32)
 
