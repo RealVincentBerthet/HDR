@@ -26,7 +26,15 @@ def refine_weight(weight):
     return True
 
 def Write(img,name):
-    cv.imwrite('../output/'+name+'.jpg', img)
+    if len(img)==0:
+        print('error : img length empty')
+    elif len(img)<=1:
+        cv.imwrite('../output/'+name+'.jpg', img)
+        print('Write : '+name+'.jpg')
+    else:    
+        for index, item in enumerate(img):
+            cv.imwrite('../output/'+name+'_'+str(index)+'.jpg', item)
+            print('Write : '+name+'_'+str(index)+'.jpg')
 
 def Show(img,name):
     cv.imshow(name,img)
@@ -42,6 +50,7 @@ imgs_rgb = [cv.imread(fn) for fn in img_fn]
 
 # 2.Compute luminance image of rgb image sequence
 imgs_lum=rgb2lum(imgs_rgb)
+Write(imgs_lum,'rgb2lum')
 imgs_lum=[img/255.0 for img in imgs_lum]
 
 # 3.Compute weight 1 using luminance distribution
