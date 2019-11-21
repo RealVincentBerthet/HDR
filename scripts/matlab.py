@@ -44,14 +44,14 @@ def Show(img,name):
 ####################
 #   Main
 ###################
-# 1.Read multi-exposed rgb image sequence (scaling to [0,1])
+# 1.Read multi-exposed rgb image sequence
 img_fn = ["../sources/tuto/img3.jpg","../sources/tuto/img2.jpg","../sources/tuto/img1.jpg","../sources/tuto/img0.jpg"]
 imgs_rgb = [cv.imread(fn) for fn in img_fn]
 
 # 2.Compute luminance image of rgb image sequence
 imgs_lum=rgb2lum(imgs_rgb)
 Write(imgs_lum,'rgb2lum')
-imgs_lum=[img/255.0 for img in imgs_lum]
+imgs_lum=[img/255.0 for img in imgs_lum] # scaling to [0,1]
 
 # 3.Compute weight 1 using luminance distribution
 w1=get_weight1(imgs_lum)
