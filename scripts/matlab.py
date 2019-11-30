@@ -49,9 +49,77 @@ def get_weight2(imgs_lum):
 
     return True
 
+
+def gaussian_kernel(size=5, sigma=0.4):
+    return cv.getGaussianKernel(ksize=size, sigma=sigma)
+
+
+def image_reduce(image):
+    kernel = gaussian_kernel()
+    out_image = cv.filter2D(image, cv.CV_8UC3, kernel)
+    out_image = cv.resize(out_image, None, fx=0.5, fy=0.5)
+    return out_image
+
+
+def image_expand(image):
+    kernel = gaussian_kernel()
+    out_image = cv.resize(image, None, fx=2, fy=2)
+    out_image = cv.filter2D(out_image, cv.CV_8UC3, kernel)
+    return out_image
+
+
+def gaussian_pyramid(img, depth):
+    G = img.copy()
+    gp = [G]
+    for i in range(depth):
+        G = image_reduce(G)
+        gp.append(G)
+    return gp
+
+
+def laplacian_pyramid(img, depth):
+    gp = gaussian_pyramid(img, depth+1)
+    lp = [gp[depth-1]]
+    for i in range(depth-1, 0, -1):
+        GE = image_expand(gp[i])
+        L = cv.subtract(gp[i-1], GE)
+        lp = [L] + lp
+    return lp
+
+
+def reconstruct_pyr(pyramid):
+    depth = len(pyramid)
+    collapsed = pyramid[depth-1]
+    for i in range(depth-2, -1, -1):
+        collapsed = cv.add(image_expand(collapsed), pyramid[i])
+    return collapsed
+
+
 def fusion_pyramid(imgs_rgb, w, lev):
     print("fusion")
-    return True
+    [H, W, C, N] = imgs_rgb.shape;
+
+    # normalize weight
+    w = w + 1e-12 # avoid division by zero
+    w = w/np.tile(np.sum(w,axis=2), (1, 1, N))
+
+    # create empty pyramid
+    pyr = gaussian_pyramid(np.zeros(H,W,C),lev)
+
+    # multiresolution blending
+    for n in range(N):
+        # construct pyramid for each image
+        pyrW = gaussian_pyramid(w[:,:,n], lev)
+        pyrI = laplacian_pyramid(imgs_rgb[:,:,:, n], lev)
+
+        for l in range(lev):
+            w = np.tile(pyrW[:,:,l], (1, 1, C))
+            pyr[:,:,:,l] = pyr[:,:,:,l] + w * pyrI[:,:,:,l]
+
+    # reconstruct
+    result = reconstruct_pyr(pyr)
+
+    return result
 
 def refine_weight(weight):
     print("refine weight")
