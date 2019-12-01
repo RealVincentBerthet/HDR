@@ -20,19 +20,18 @@ Brigthness
 
 ## Tone Mapping
 [toneMapping.py](scripts/toneMapping.py)
-HDR image used is the mertens generated in previous tutorial
 ### cv2
 #### Drago
-![](output/tonemap/tonemapDrago_gamma_1.0.jpg)
+![](output/tonemap/ldr_Drago_gamma_1.0.jpg)
 
 #### Durand
-![](output/tonemap/tonemapDurand_gamma_1.0.jpg)
+![](output/tonemap/ldr_Durand_gamma_1.0.jpg)
 
 #### Mantiuk
-![](output/tonemap/tonemapMantiuk_gamma_1.0.jpg)
+![](output/tonemap/ldr_Mantiuk_gamma_1.0.jpg)
 
 #### Reinhard
-![](output/tonemap/tonemapReinhard_gamma_1.0.jpg)
+![](output/tonemap/ldr_Reinhard_gamma_1.0.jpg)
 
 ### HDRI @TODO
 ## Tone Mapping inverse
