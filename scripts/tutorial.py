@@ -1,8 +1,14 @@
 import cv2 as cv
 import numpy as np
+import os
 
-# 0.Require
-# pip install opencv-python==3.2.0.8
+def write8bit(img,name,dir) :
+    path='../output/'+dir
+    img_8bits = np.clip(img*255, 0, 255).astype('uint8')
+    if not os.path.exists(path):
+        os.makedirs(path)
+    cv.imwrite('../output/'+dir+name+'.jpg', img_8bits)
+    print('Write : '+path+name+'.jpg')
 
 # 1.Loading exposure images into a list
 img_fn = ["../sources/tuto/img3.jpg","../sources/tuto/img2.jpg","../sources/tuto/img1.jpg","../sources/tuto/img0.jpg"]
@@ -34,9 +40,6 @@ crf_robertson = cal_robertson.process(img_list, times=exposure_times)
 hdr_robertson = merge_robertson.process(img_list, times=exposure_times.copy(), response=crf_robertson.copy())
 
 # 6.Convert datatype to 8-bit and save
-res_debevec_8bit = np.clip(res_debevec*255, 0, 255).astype('uint8')
-cv.imwrite("../output/ldr_debevec.jpg", res_debevec_8bit)
-res_robertson_8bit = np.clip(res_robertson*255, 0, 255).astype('uint8')
-cv.imwrite("../output/ldr_robertson.jpg", res_robertson_8bit)
-res_mertens_8bit = np.clip(res_mertens*255, 0, 255).astype('uint8')
-cv.imwrite("../output/fusion_mertens.jpg", res_mertens_8bit)
+write8bit(res_debevec,'ldr_debevec','tutorial/')
+write8bit(res_robertson,'res_robertson','tutorial/')
+write8bit(res_mertens,'res_mertens','tutorial/')
