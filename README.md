@@ -4,6 +4,8 @@
 
 *QUERO Benoit*
 
+//hdr_debevec is blank 
+
 ## Tutorial
 [tutorial.py](./scripts/tutorial.py)
 #### Debevec (Tonemap Durand)

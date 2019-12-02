@@ -33,7 +33,6 @@ def get_weight1(imgs_lum):
     #compute mean value of non exposed intensity region
     means=[np.mean(img) for img in imgs_lum]
 
-    print(means)
     #compute sigma value of non exposed intensity region
     sigmas=np.zeros(N)
     sigmas[0]=(means[1]-means[0])/2
@@ -58,6 +57,25 @@ def get_weight2(imgs_lum):
         img_hists[:,n], _ = np.histogram(img.ravel(),256,[0,256])
 
     #img_hists =img_hists/np.matlib.repmat(sum(img_hists,0)) #@TODO
+    #img_hists =img_hists/repmat(sum(img_hists,1),[256 1]) #matlab
+    
+
+    gradient_for_ij=np.zeros((H,W,N))
+    eps=np.exp(-12)
+    for n in range(0,N) :
+        for i in range(0,H) :
+            for j in range (0,W) :
+                idx=np.ceil(255*imgs_lum[i,j,n])+1
+                gradient_for_ij[i,j,n]=1/img_hists[idx,n]+eps
+    
+    
+    gradient_for_ij_max=np.zeros((H,W))
+
+    for n in range(0,N) :
+        gradient_for_ij_max=np.sum(gradient_for_ij_max,gradient_for_ij[:,:,n])+eps
+
+    #weight = gradient_for_ij./repmat(gradient_for_ij_max,[1 1 N]); #@TODO
+    
     return True
 
 def refine_weight(weight):
@@ -67,7 +85,7 @@ def refine_weight(weight):
     w = np.zeros((H,W,N))
 
     for n in range(0,N) :
-        w[:,:,n] = cv.GaussianBlur(w[:,:,n],ksize=(3,3),sigmaX=5)
+        w[:,:,n] = cv.GaussianBlur(w[:,:,n],ksize=(5,5),sigmaX=5)
     
     return w
 
@@ -117,28 +135,35 @@ def reconstruct_pyr(pyramid):
 
 
 def fusion_pyramid(imgs_rgb, w, lev):
-    [H, W, C, N] = imgs_rgb.shape
+    H=imgs_rgb[0].shape[0]
+    W=imgs_rgb[0].shape[1]
+    C=imgs_rgb[0].shape[2]
+    N=len(imgs_rgb)
 
-    # normalize weight
-    w = w + 1e-12 # avoid division by zero
-    w = w/np.tile(np.sum(w,axis=2), (1, 1, N))
+    #  # normalize weight
+    w = w +  np.exp(-12) # avoid division by zero
 
-    # create empty pyramid
-    pyr = gaussian_pyramid(np.zeros(H,W,C),lev)
 
-    # multiresolution blending
-    for n in range(N):
-        # construct pyramid for each image
-        pyrW = gaussian_pyramid(w[:,:,n], lev)
-        pyrI = laplacian_pyramid(imgs_rgb[:,:,:, n], lev)
+   # w=w/np.tile()
 
-        for l in range(lev):
-            w = np.tile(pyrW[:,:,l], (1, 1, C))
-            pyr[:,:,:,l] = pyr[:,:,:,l] + w * pyrI[:,:,:,l]
+    # w = w/np.tile(np.sum(w,axis=2), (1, 1, N))
+
+    # # create empty pyramid
+    # pyr = gaussian_pyramid(np.zeros(H,W,C),lev)
+
+    # # multiresolution blending
+    # for n in range(N):
+    #     # construct pyramid for each image
+    #     pyrW = gaussian_pyramid(w[:,:,n], lev)
+    #     pyrI = laplacian_pyramid(imgs_rgb[:,:,:, n], lev)
+
+    #     for l in range(lev):
+    #         w = np.tile(pyrW[:,:,l], (1, 1, C))
+    #         pyr[:,:,:,l] = pyr[:,:,:,l] + w * pyrI[:,:,:,l]
 
     # reconstruct
-    result = reconstruct_pyr(pyr)
-    return result
+    # result = reconstruct_pyr(pyr)
+    return True
 
 ####################
 #   Main
@@ -154,7 +179,7 @@ write('./output/exposure/rgb2lum.jpg',imgs_lum)
 imgs_lum=[img/255.0 for img in imgs_lum] # scaling to [0,1]
 
 # 3.Compute weight 1 using luminance distribution
-w1=get_weight1(imgs_lum) #@TODO w1 != from matlab
+w1=get_weight1(imgs_lum) 
 
 # 4.Compute weight 2 using luminance gradient
 w2=get_weight2(imgs_lum)
@@ -167,7 +192,7 @@ w = refine_weight(w)
 
 # 6.Fuse images using pyramid decomposition
 lev=7
-#img_result=fusion_pyramid(imgs_rgb,w,lev)
+img_result=fusion_pyramid(imgs_rgb,w,lev)
 
 # 7.Show and save
 #write('./output/result.jpg',img_result)
