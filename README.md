@@ -4,8 +4,6 @@
 
 *QUERO Benoit*
 
-//hdr_debevec is blank 
-
 ## Tutorial
 [tutorial.py](./scripts/tutorial.py)
 #### Debevec (Tonemap Durand)
@@ -38,5 +36,12 @@ Crf
 #### Reinhard
 ![](./output/tonemap/ldr_Reinhard_gamma_1.0.jpg)
 
-### HDRI @TODO
-## Tone Mapping inverse
+### HDRI Operators
+#### Operator Gamma
+![](./output/tonemap/ldr_hdri_gamma.jpg)
+
+#### Operator Logarithmic
+![](./output/tonemap/ldr_hdri_logarithmic.jpg)
+
+#### Operator Exponential
+![](./output/tonemap/ldr_hdri_exponential.jpg)

@@ -1,8 +1,7 @@
 import cv2 as cv
 import numpy as np
 import os
-#import colour
-#import colour_hdri
+import hdri_operators
 
 print('OpenCV v'+str(cv.__version__))
 
@@ -27,26 +26,34 @@ gamma=1.0
 tonemapper=cv.createTonemapDrago()
 tonemapper.setGamma(gamma)
 img_ldr= tonemapper.process(img_hdr.copy())
-write('./output/tonemap/ldr_Drago_gamma_'+str(tonemapper.getGamma())+'.jpg',img_ldr*255)
+write('./output/tonemap/ldr_Drago_gamma_'+str(tonemapper.getGamma())+'.jpg',np.clip(img_ldr*255,0,255).astype('uint8'))
 
 # Durand
 tonemapper=cv.createTonemapDurand()
 tonemapper.setGamma(gamma)
 img_ldr= tonemapper.process(img_hdr.copy())
-write('./output/tonemap/ldr_Durand_gamma_'+str(tonemapper.getGamma())+'.jpg',img_ldr*255)
+write('./output/tonemap/ldr_Durand_gamma_'+str(tonemapper.getGamma())+'.jpg',np.clip(img_ldr*255,0,255).astype('uint8'))
 
 # Mantiuk
 tonemapper=cv.createTonemapMantiuk()
 tonemapper.setGamma(gamma)
 img_ldr= tonemapper.process(img_hdr.copy())
-write('./output/tonemap/ldr_Mantiuk_gamma_'+str(tonemapper.getGamma())+'.jpg',img_ldr*255)
+write('./output/tonemap/ldr_Mantiuk_gamma_'+str(tonemapper.getGamma())+'.jpg',np.clip(img_ldr*255,0,255).astype('uint8'))
 
 # Reinhard
 tonemapper=cv.createTonemapReinhard()
 tonemapper.setGamma(gamma)
 img_ldr= tonemapper.process(img_hdr.copy())
-write('./output/tonemap/ldr_Reinhard_gamma_'+str(tonemapper.getGamma())+'.jpg',img_ldr*255)
+write('./output/tonemap/ldr_Reinhard_gamma_'+str(tonemapper.getGamma())+'.jpg',np.clip(img_ldr*255,0,255).astype('uint8'))
 
-# HDRI Operators
-#test=colour_hdri.tonemapping_operator_logarithmic(img_hdr)
-#test=hdri.tonemapping_operator_logarithmic(img_ldr)
+# Operator Gamma
+img_ldr=hdri_operators.tonemapping_operator_gamma(img_hdr.copy())
+write('./output/tonemap/ldr_hdri_gamma.jpg',img_ldr)
+
+# Operator exponential
+img_ldr=hdri_operators.tonemapping_operator_exponential(img_hdr.copy())
+write('./output/tonemap/ldr_hdri_exponential.jpg',np.clip(img_ldr*255,0,255).astype('uint8'))
+
+# Operator Logarithmic
+img_ldr=hdri_operators.tonemapping_operator_logarithmic(img_hdr.copy())
+write('./output/tonemap/ldr_hdri_logarithmic.jpg',np.clip(img_ldr*255,0,255).astype('uint8'))

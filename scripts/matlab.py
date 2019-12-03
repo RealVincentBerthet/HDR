@@ -2,6 +2,8 @@ import cv2 as cv
 import numpy as np
 import os
 
+print('OpenCV v'+str(cv.__version__))
+
 ####################
 #   Functions
 ###################
@@ -56,23 +58,25 @@ def get_weight2(imgs_lum):
         img=np.uint8(255*imgs_lum[n])
         img_hists[:,n], _ = np.histogram(img.ravel(),256,[0,256])
 
-    #img_hists =img_hists/np.matlib.repmat(sum(img_hists,0)) #@TODO
-    #img_hists =img_hists/repmat(sum(img_hists,1),[256 1]) #matlab
-    
+    #img_hists =img_hists/repmat(sum(img_hists,1),[256 1]) #matlab @TODO
+
 
     gradient_for_ij=np.zeros((H,W,N))
     eps=np.exp(-12)
     for n in range(0,N) :
         for i in range(0,H) :
             for j in range (0,W) :
-                idx=np.ceil(255*imgs_lum[i,j,n])+1
-                gradient_for_ij[i,j,n]=1/img_hists[idx,n]+eps
+                idx=np.ceil(255*imgs_lum[n][i,j])
+                #gradient_for_ij[i,j,n]=1/img_hists[idx,n]+eps
     
     
+    print(gradient_for_ij[0,0,0]) 
+    print(img_hists.shape)  #@TODO repmat du dessus
+
     gradient_for_ij_max=np.zeros((H,W))
 
     for n in range(0,N) :
-        gradient_for_ij_max=np.sum(gradient_for_ij_max,gradient_for_ij[:,:,n])+eps
+       gradient_for_ij_max=(gradient_for_ij_max+gradient_for_ij[:,:,n])+eps
 
     #weight = gradient_for_ij./repmat(gradient_for_ij_max,[1 1 N]); #@TODO
     
@@ -80,13 +84,18 @@ def get_weight2(imgs_lum):
 
 def refine_weight(weight):
     H=weight[0].shape[0]
+    #@TODO voir dim sur matlab
+
     W=weight[0].shape[1]
     N=len(weight)
     w = np.zeros((H,W,N))
 
+
+
     for n in range(0,N) :
         w[:,:,n] = cv.GaussianBlur(w[:,:,n],ksize=(5,5),sigmaX=5)
     
+
     return w
 
 def gaussian_kernel(size=5, sigma=0.4):
