@@ -111,6 +111,11 @@ def image_reduce(image):
     out_image = cv.resize(out_image, None, fx=0.5, fy=0.5)
     return out_image
 
+def image_reduce_w(image):
+    kernel = gaussian_kernel()
+    out_image = cv.filter2D(image, -1, kernel)
+    out_image = cv.resize(out_image, None, fx=0.5, fy=0.5)
+    return out_image
 
 def image_expand(image):
     kernel = gaussian_kernel()
@@ -118,6 +123,13 @@ def image_expand(image):
     out_image = cv.filter2D(out_image, cv.CV_8UC3, kernel)
     return out_image
 
+def gaussian_pyramid_w(img, depth):
+    G = img.copy()
+    gp = [G]
+    for i in range(depth):
+        G = image_reduce_w(G)
+        gp.append(G)
+    return gp
 
 def gaussian_pyramid(img, depth):
     G = img.copy()
@@ -142,40 +154,41 @@ def reconstruct_pyr(pyramid):
     depth = len(pyramid)
     collapsed = pyramid[depth-1]
     for i in range(depth-2, -1, -1):
-        collapsed = cv.add(image_expand(collapsed), pyramid[i])
+        collapsed = cv.add(image_expand(collapsed), pyramid[i], None, None, cv.CV_8UC3)
     return collapsed
 
 
 def fusion_pyramid(imgs_rgb, w, lev):
-    H=imgs_rgb[0].shape[0]
-    W=imgs_rgb[0].shape[1]
-    C=imgs_rgb[0].shape[2]
-    N=len(imgs_rgb)
+    H = imgs_rgb[0].shape[0]
+    W = imgs_rgb[0].shape[1]
+    C = imgs_rgb[0].shape[2]
+    N = len(imgs_rgb)
 
     #  # normalize weight
-    w = w +  np.exp(-12) # avoid division by zero
+    w = w + np.exp(-12)  # avoid division by zero
+    sum = np.sum(w, axis=2)
+    sum = np.expand_dims(sum, 2)
+    w = w / np.tile(sum, (1, 1, N))
 
+    # create empty pyramid
+    blank_image = np.zeros((H, W, C), np.uint8)
+    pyr = gaussian_pyramid(blank_image, lev)
 
-   # w=w/np.tile()
+    # multiresolution blending
+    for n in range(N):
+        # construct pyramid for each image
+        pyrW = gaussian_pyramid_w(w[:, :, n], lev)
+        pyrI = laplacian_pyramid(imgs_rgb[n], lev)
 
-    # w = w/np.tile(np.sum(w,axis=2), (1, 1, N))
-
-    # # create empty pyramid
-    # pyr = gaussian_pyramid(np.zeros(H,W,C),lev)
-
-    # # multiresolution blending
-    # for n in range(N):
-    #     # construct pyramid for each image
-    #     pyrW = gaussian_pyramid(w[:,:,n], lev)
-    #     pyrI = laplacian_pyramid(imgs_rgb[:,:,:, n], lev)
-
-    #     for l in range(lev):
-    #         w = np.tile(pyrW[:,:,l], (1, 1, C))
-    #         pyr[:,:,:,l] = pyr[:,:,:,l] + w * pyrI[:,:,:,l]
+        for l in range(lev):
+            pyrW[l] = np.expand_dims(pyrW[l], 2)
+            ww = np.tile(pyrW[l], (1, 1, C))
+            pyr[l] = pyr[l] + ww * pyrI[l]
 
     # reconstruct
-    # result = reconstruct_pyr(pyr)
-    return True
+    result = reconstruct_pyr(pyr)
+
+    return result
 
 ####################
 #   Main
