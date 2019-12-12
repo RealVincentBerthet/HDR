@@ -45,7 +45,7 @@ def get_weight1(imgs_lum):
     #compute weight map of each image in luminance image sequence
     for n in range(0,N) :
         weight[:,:,n] =np.exp(-0.5*(np.power(imgs_lum[n]-(1-means[n]),2)/sigmas[n]/sigmas[n]))
-    
+
     return weight
 
 def get_weight2(imgs_lum):
@@ -58,8 +58,11 @@ def get_weight2(imgs_lum):
         img=np.uint8(255*imgs_lum[n])
         img_hists[:,n], _ = np.histogram(img.ravel(),256,[0,256])
 
-    #img_hists =img_hists/repmat(sum(img_hists,1),[256 1]) #matlab @TODO
+    
+    
 
+    #img_hists =img_hists/repmat(sum(img_hists,1),[256 1]) #matlab @TODO
+    print(imgs_lum[0][100,0]*255) # @TODO AVOIR pk tjrs 1
 
     gradient_for_ij=np.zeros((H,W,N))
     eps=np.exp(-12)
@@ -70,8 +73,8 @@ def get_weight2(imgs_lum):
                 #gradient_for_ij[i,j,n]=1/img_hists[idx,n]+eps
     
     
-    print(gradient_for_ij[0,0,0]) 
-    print(img_hists.shape)  #@TODO repmat du dessus
+    #print(gradient_for_ij[0,0,0]) 
+    #print(img_hists.shape)  #@TODO repmat du dessus
 
     gradient_for_ij_max=np.zeros((H,W))
 
@@ -189,10 +192,8 @@ imgs_lum=[img/255.0 for img in imgs_lum] # scaling to [0,1]
 
 # 3.Compute weight 1 using luminance distribution
 w1=get_weight1(imgs_lum) 
-
 # 4.Compute weight 2 using luminance gradient
 w2=get_weight2(imgs_lum)
-
 # 5.Corporate weight 1 & weight 2 and refine weight with wlsFilter
 p1 = 1
 p2 = 1
