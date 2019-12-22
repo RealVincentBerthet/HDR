@@ -33,10 +33,9 @@ Without Crf| With Crf
 ### cv2
 
 Source :
-![](./sources/data/266/DSC00267.jpg)         | ![](./sources/data/266/DSC00266.jpg) | ![](./sources/data/266/DSC00268.jpg)
-:-------------------------:|:-------------------------:|:-------------------------:
-Exposure time = 1/800 |Exposure time = 1/125 | Exposure time = 1/4
-
+| ![](./sources/data/266/DSC00267.jpg)  | ![](./sources/data/266/DSC00266.jpg) | ![](./sources/data/266/DSC00268.jpg) |
+|:-------------------------:|:-------------------------:|:-------------------------:|
+| Exposure time = 1/800  | Exposure time = 1/125 | Exposure time = 1/4 |
 
 #### Drago
 ![](./output/tonemap/ldr_Drago_gamma_1.0_satu_1.0_lum_500.jpg)
