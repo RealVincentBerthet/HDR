@@ -20,8 +20,10 @@ The aim of this project was to exoeriment features related to High Dynamic Range
 Without Crf| With Crf
 
 #### Robertson (Tonemap Durand)
+
 ![](./output/tutorial/ldr_robertson.jpg)      | ![](./output/tutorial/ldr_robertson_crf.jpg)
 :-------------------------:|:-------------------------:
+Without Crf| With Crf
 
 #### Mertens 
 ![](./output/tutorial/fusion_mertens.jpg)
