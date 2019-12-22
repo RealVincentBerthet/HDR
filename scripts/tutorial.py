@@ -10,14 +10,14 @@ def write(path,img):
     print('Write : '+path)
 
 # 1.Loading exposure images into a list
-#img_fn = ["./sources/tuto/img3.jpg","./sources/tuto/img2.jpg","./sources/tuto/img1.jpg","./sources/tuto/img0.jpg"]
-#exposure_times = np.array([15.0, 2.5, 0.25, 0.0333], dtype=np.float32)
+img_fn = ["./sources/tuto/img3.jpg","./sources/tuto/img2.jpg","./sources/tuto/img1.jpg","./sources/tuto/img0.jpg"]
+exposure_times = np.array([15.0, 2.5, 0.25, 0.0333], dtype=np.float32)
 # img_fn = ["./sources/data/260/DSC00260.jpg","./sources/data/260/DSC00261.jpg","./sources/data/260/DSC00262.jpg"]
 # exposure_times = np.array([0.01, 0.003125, 0.03333333333], dtype=np.float32)
 # img_fn = ["./sources/data/272/DSC00272.jpg","./sources/data/272/DSC00273.jpg","./sources/data/272/DSC00274.jpg"]
 # exposure_times = np.array([0.0125, 0.005, 0.04], dtype=np.float32)
-img_fn = ["./sources/data/269/DSC00269.jpg","./sources/data/269/DSC00270.jpg","./sources/data/269/DSC00271.jpg"]
-exposure_times = np.array([0.01, 0.0025, 0.025], dtype=np.float32)
+#img_fn = ["./sources/data/269/DSC00269.jpg","./sources/data/269/DSC00270.jpg","./sources/data/269/DSC00271.jpg"]
+#exposure_times = np.array([0.01, 0.0025, 0.025], dtype=np.float32)
 #img_fn = ["./sources/Benoit/IMG_2206.JPG","./sources/Benoit/IMG_2208.JPG","./sources/Benoit/IMG_2207.JPG"]
 #exposure_times = np.array([0.001169591, 0.03030303, 0.058823529], dtype=np.float32)
 img_list = [cv.imread(fn) for fn in img_fn]
