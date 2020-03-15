@@ -8,7 +8,7 @@ By *BERTHET Vincent & QUERO Benoit*
 ![preview](./output/hdr.jpg)
 ![](./output/hdr_sample.jpg)
 
-The aim of this project was to exoeriment features related to High Dynamic Range (HDR)
+The aim of this project was to experiment features related to High Dynamic Range (HDR)
 
 
 ## Tutorial
